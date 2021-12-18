@@ -1,0 +1,8 @@
+{
+  "editor.rulers": [88, 120],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "cSpell.words": ["chakra"],
+}
