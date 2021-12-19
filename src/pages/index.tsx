@@ -1,8 +1,32 @@
-import NextLink from "next/link";
 import { Flex, Button, Stack } from '@chakra-ui/react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../components/Form/Input'
+import { useRouter } from "next/router"
 
-export default function SignIn() {  
+type SignInFormData = {
+  email: string;
+  password: string;
+}
+
+const signInFormSchema = yup.object().shape({
+  email: yup.string().required('E-mail Obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha Obrigatória')
+})
+
+export default function SignIn() {
+  const router = useRouter()
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(signInFormSchema)
+  })
+  const { errors } = formState;
+
+  const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    router.push('/dashboard')
+  }
+
   return (
     <Flex w="100vw" h="100vh" align="center" justify="center">
       <Flex
@@ -12,16 +36,34 @@ export default function SignIn() {
         bg="gray.800"
         p="8"
         borderRadius={8}
-        flexDir="column"        
+        flexDir="column"
+        onSubmit={handleSubmit(handleSignIn)}
       >
         <Stack spacing="4">
-          <Input name="email" type="email" label="E-mail" />
-          <Input name="password" type="password" label="Senha" />
-          <NextLink href="/dashboard" passHref>
-            <Button type="submit" mt="6" colorScheme="blue">
-              Entrar
-            </Button>
-          </NextLink>
+          <Input
+            name="email"
+            type="email"
+            label="E-mail"
+            error={errors.email}
+            {...register('email')
+            
+          }
+          />
+          <Input
+            name="password"
+            type="password"
+            label="Senha"
+            error={errors.password}
+            {...register('password')}
+          />
+          <Button
+            type="submit"
+            mt="6"
+            colorScheme="blue"
+            isLoading={formState.isSubmitting}
+            >
+            Entrar
+          </Button>
         </Stack>
       </Flex>
     </Flex>
